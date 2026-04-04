@@ -1,0 +1,17 @@
+[mgr]
+ratio = [1, 4, 3]
+show_hidden=true
+sort_by = "mtime"
+sort_reverse = true
+sort_dir_first = true
+linemode = "mtime"
+
+[opener]
+edit_new_window = [
+  { run = 'foot $EDITOR "$1"', orphan = true, desc = "Edit in new window", for = "unix" }
+]
+
+[open]
+prepend_rules = [
+  { mime = "text/*", use = [ "edit", "edit_new_window", "reveal" ] },
+]

@@ -1,0 +1,46 @@
+# [flavor]
+# dark = "catppuccin-frappe"
+# dark = "tokyo-night"
+# dark = "kanagawa"
+# dark = "ayu-dark"
+# dark = "flexoki-dark"
+
+[filetype]
+rules = [
+	# Image
+	{ mime = "image/*", fg = "#e3d15d" },
+	# Media
+	{ mime = "{audio,video}/*", fg = "magenta" },
+	# Archive
+	{ mime = "application/{zip,rar,7z*,tar,gzip,xz,zstd,bzip*,lzma,compress,archive,cpio,arj,xar,ms-cab*}", fg = "red" },
+	# Document
+	{ mime = "application/{pdf,doc,rtf}", fg = "cyan" },
+	# Virtual file system
+	{ mime = "vfs/{absent,stale}", fg = "gray" },
+	# Special file
+	{ url = "*", is = "orphan", bg = "red" },
+	{ url = "*", is = "exec"  , fg = "green" },
+	# Dummy file
+	{ url = "*", is = "dummy", bg = "red" },
+	{ url = "*/", is = "dummy", bg = "red" },
+	# Fallback
+	{ url = "*/", fg = "blue" }
+]
+
+[status]
+sep_left  = { open = "", close = "" }
+sep_right = { open = "", close = "" }
+overall   = { fg = "gray", bg = "reset" }
+perm_type  = { fg = "darkgray", bg = "reset" }
+perm_read  = { fg = "gray", bg = "reset" }
+perm_write = { fg = "gray", bg = "reset" }
+perm_exec  = { fg = "gray", bg = "reset" }
+
+[mode]
+normal_main = { fg = "gray", bg = "reset" }
+normal_alt  = { fg = "gray", bg = "reset" }
+select_main = { fg = "gray", bg = "reset" }
+select_alt  = { fg = "gray", bg = "reset" }
+unset_main  = { fg = "gray", bg = "reset" }
+unset_alt   = { fg = "gray", bg = "reset" }
+

@@ -1,0 +1,32 @@
+[[mgr.prepend_keymap]]
+on   = "!"
+for  = "unix"
+run  = 'shell "$SHELL" --block'
+desc = "Open shell here"
+
+[[input.prepend_keymap]]
+on   = "<Esc>"
+run  = "close"
+desc = "Cancel input"
+
+[[mgr.prepend_keymap]]
+on   = "d"
+run  = "remove --force"
+desc = "Trash without confirmation"
+
+# Shift+Enter takes the role of O
+[[mgr.prepend_keymap]]
+on   = "O"
+run  = 'shell --orphan -- foot "$EDITOR" "%h"'
+desc = "Open hovered file in new foot window"
+
+
+[[mgr.prepend_keymap]]
+on   = [ ",", "d" ]
+run  = "sort --dir-first=no"
+desc = "Mix directories with files"
+
+[[mgr.prepend_keymap]]
+on   = [ ",", "D" ]
+run  = "sort --dir-first"
+desc = "Pin directories to top"

@@ -1,0 +1,48 @@
+* {
+    font-family: "JetBrains Mono Nerd Font", "JetBrains Mono", sans-serif;
+    font-size: 13px;
+    border: none;
+}
+
+window#waybar {
+    background-color: rgba(30, 30, 46, 0.9);
+    color: #cdd6f4;
+}
+
+/* Individual module spacing */
+#workspaces button,
+#window,
+#clock,
+#pulseaudio,
+#network,
+#bluetooth,
+#cpu,
+#memory,
+#battery,
+#custom-clipboard,
+#custom-power {
+    padding: 0 7px;
+    margin: 0 2px;
+}
+
+/* Specific styling for workspaces */
+#workspaces button {
+    color: #6c7086;
+    background: transparent;
+    border-bottom: 2px solid transparent;
+}
+
+#workspaces button.active {
+    color: #89b4fa;
+    border-bottom: 2px solid #89b4fa;
+}
+
+#workspaces button.urgent {
+    color: #f38ba8;
+}
+
+tooltip {
+  background: rgba(24, 24, 37, 1);
+  border: 1px solid rgba(205, 214, 244, 0.18);
+}
+

@@ -1,0 +1,323 @@
+// Modified from Nickjj's config
+
+// ----------------------------------------------------------------------------
+// Launch at startup
+// ----------------------------------------------------------------------------
+
+// spawn-at-startup "sh" "-c" "killall waybar; waybar"
+spawn-at-startup "mako"
+spawn-at-startup "swayidle" "-w" \
+    "timeout" "300" "niri msg action power-off-monitors" \
+    "resume" "niri msg action power-on-monitors" \
+    "timeout" "360" "swaylock -f -c 1f1f1f" \
+    "before-sleep" "swaylock -f -c 1f1f1f"
+spawn-at-startup "wl-clip-persist" "--clipboard" "regular"
+spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
+spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
+// spawn-at-startup "/opt/OpenWhispr/open-whispr"
+// spawn-at-startup "/home/noblysp/.local/bin/openwhispr-x11"
+
+// ----------------------------------------------------------------------------
+// Input devices
+// ----------------------------------------------------------------------------
+
+input {
+    keyboard {
+        xkb {
+            options "altwin:menu_win"  // Caps->Esc is managed by keyd as it allows for hold and tap behavior
+        }
+        repeat-delay 200
+        repeat-rate 40
+    }
+
+    touchpad {
+        tap
+        natural-scroll
+    }
+
+    mouse {
+    }
+
+    workspace-auto-back-and-forth  // Pressing Mod+Num twice will go back to prev workspace you were on
+}
+
+
+// ----------------------------------------------------------------------------
+// Output devices
+// ----------------------------------------------------------------------------
+
+// Built-in panel
+output "eDP-1" {
+    scale 1.25
+    transform "normal"
+    mode "1920x1200@60.003"
+    position x=0 y=0
+}
+
+// External 27" on HDMI
+output "HDMI-A-1" {
+    scale 1.25
+    transform "normal"
+    mode "2560x1440@99.965"
+    // With 1.25x scaling, laptop logical width = 1920 / 1.25 = 1536
+    position x=1536 y=0
+    focus-at-startup
+}
+
+
+
+// ----------------------------------------------------------------------------
+// Behaviors and aesthetics
+// ----------------------------------------------------------------------------
+
+hotkey-overlay {
+    skip-at-startup
+    hide-not-bound
+}
+
+gestures {
+    hot-corners {
+        off
+    }
+}
+
+// Values below 1 speed up animations
+animations {
+    slowdown 0.8
+}
+
+prefer-no-csd
+
+screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
+
+layout {
+    gaps 6
+    
+    focus-ring {
+        width 1.5
+    }
+
+    always-center-single-column
+
+    preset-column-widths {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 1.0
+    }
+
+    preset-window-heights {
+        proportion 0.33333
+        proportion 0.5
+        proportion 0.66667
+        proportion 1.0
+    }
+}
+
+// ----------------------------------------------------------------------------
+// Window / layer rules
+// ----------------------------------------------------------------------------
+
+window-rule {
+    geometry-corner-radius 2
+    clip-to-geometry true
+}
+
+window-rule {
+    match app-id="discord"
+    default-column-width { proportion 0.5; }
+}
+
+window-rule {
+    match app-id=r#"firefox$"# title="^Picture-in-Picture$"
+    open-floating true
+}
+
+window-rule {
+    match app-id=r#"firefox$"#
+    open-maximized true
+}
+
+window-rule {
+    match app-id=r#"^dot\.floating\.terminal$"#
+
+    open-floating true
+    default-column-width { proportion 0.33; }
+    default-window-height { proportion 0.5; }
+    opacity 0.9
+}
+
+// ----------------------------------------------------------------------------
+// Key binds
+// ----------------------------------------------------------------------------
+
+binds {
+    Mod+Shift+A repeat=false hotkey-overlay-title="Open OpenWhispr" { spawn "/home/noblysp/.local/bin/openwhispr-x11"; }
+
+    // Overview and Help
+    Mod+Slash hotkey-overlay-title="Show hotkey overlay" { show-hotkey-overlay; }
+    Mod+O repeat=false hotkey-overlay-title="Toggle overview" { toggle-overview; }
+
+    // Applications
+    Mod+T { spawn "foot"; }
+    Mod+Y hotkey-overlay-title="Terminal (floating)" { spawn "foot" "--app-id=dot.floating.terminal"; }
+    Mod+V {
+        spawn-sh "cliphist list | fuzzel --dmenu | cliphist decode | wl-copy"
+    }
+    Mod+E { spawn "nautilus"; }
+    Mod+B { spawn "firefox"; }
+    Mod+Shift+B { spawn "firefox" "--private-window"; }
+    Mod+Space { spawn "fuzzel"; }
+    Ctrl+Escape hotkey-overlay-title="System Monitor" { spawn "gnome-system-monitor"; }
+    Super+Alt+L hotkey-overlay-title="Lock the Screen" { spawn "swaylock" "-f" "-c" "1f1f1f"; }
+
+    // Media keys
+    XF86AudioRaiseVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1+ -l 1.0"; }
+    XF86AudioLowerVolume allow-when-locked=true { spawn-sh "wpctl set-volume @DEFAULT_AUDIO_SINK@ 0.1-"; }
+    XF86AudioMute        allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"; }
+    XF86AudioMicMute     allow-when-locked=true { spawn-sh "wpctl set-mute @DEFAULT_AUDIO_SOURCE@ toggle"; }
+
+    XF86AudioPlay        allow-when-locked=true { spawn "playerctl" "play-pause"; }
+    XF86AudioStop        allow-when-locked=true { spawn "playerctl" "stop"; }
+    XF86AudioPrev        allow-when-locked=true { spawn "playerctl" "previous"; }
+    XF86AudioNext        allow-when-locked=true { spawn "playerctl" "next"; }
+
+    XF86MonBrightnessUp   allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "+5%"; }
+    XF86MonBrightnessDown allow-when-locked=true { spawn "brightnessctl" "--class=backlight" "set" "5%-"; }
+
+
+    // Window and column behavior.
+    Mod+Q repeat=false hotkey-overlay-title="Close window" { close-window; }
+
+    Mod+C hotkey-overlay-title="Center column" { center-column; }
+    Mod+Ctrl+C hotkey-overlay-title="Center all visible columns" { center-visible-columns; }
+
+    Mod+Z hotkey-overlay-title="Toggle floating" { toggle-window-floating; }
+    // Mod+Ctrl+Z hotkey-overlay-title="Switch focus between floating and tiling"{ switch-focus-between-floating-and-tiling; }
+
+    // Mod+W hotkey-overlay-title="Toggle tabbed column" { toggle-column-tabbed-display; }
+
+    Mod+BracketLeft  hotkey-overlay-title="Move focused window in and out of column to the left" { consume-or-expel-window-left; }
+    Mod+BracketRight hotkey-overlay-title="Move focused window in and out of column to the right" { consume-or-expel-window-right; }
+    Mod+Comma        hotkey-overlay-title="Move right window under focused column" { consume-window-into-column; }
+    Mod+Period       hotkey-overlay-title="Remove bottom window from focused column" { expel-window-from-column; }
+
+
+    // Window and column sizes.
+    Mod+F       hotkey-overlay-title="Maximize column" { maximize-column; }
+    Mod+Ctrl+F  hotkey-overlay-title="Fill empty column space" { expand-column-to-available-width; }
+    Mod+Shift+F hotkey-overlay-title="Make 66 (focused column) & 33 split" {
+        spawn-sh "niri msg action set-column-width '66.67%'; niri msg action focus-column-right; niri msg action set-column-width '33.33%'; niri msg action focus-column-left"
+    }
+
+    Mod+R       hotkey-overlay-title="Cycle preset widths" { switch-preset-column-width; }
+    Mod+Shift+R hotkey-overlay-title="Cycle preset heights" { switch-preset-window-height; }
+    Mod+Ctrl+R  hotkey-overlay-title="Reset window height" { reset-window-height; }
+
+    Mod+Equal       hotkey-overlay-title="Increase column width" { set-column-width "+10%"; }
+    Mod+Minus       hotkey-overlay-title="Decrease column width" { set-column-width "-10%"; }
+    Mod+Shift+Equal hotkey-overlay-title="Increase window height" { set-window-height "+10%"; }
+    Mod+Shift+Minus hotkey-overlay-title="Decrease window height" { set-window-height "-10%"; }
+    
+
+    // Window and column movement.
+    Mod+Left  { focus-column-or-monitor-left; }
+    Mod+Down  { focus-window-or-workspace-down; }
+    Mod+Up    { focus-window-or-workspace-up; }
+    Mod+Right { focus-column-or-monitor-right; }
+    Mod+H     { focus-column-or-monitor-left; }
+    Mod+J     { focus-window-or-workspace-down; }
+    Mod+K     { focus-window-or-workspace-up; }
+    Mod+L     { focus-column-or-monitor-right; }
+
+    Mod+Ctrl+Left  { move-column-left-or-to-monitor-left; }
+    Mod+Ctrl+Down  { move-window-down-or-to-workspace-down; }
+    Mod+Ctrl+Up    { move-window-up-or-to-workspace-up; }
+    Mod+Ctrl+Right { move-column-right-or-to-monitor-right; }
+    Mod+Ctrl+H     { move-column-left-or-to-monitor-left; }
+    Mod+Ctrl+J     { move-window-down-or-to-workspace-down; }
+    Mod+Ctrl+K     { move-window-up-or-to-workspace-up; }
+    Mod+Ctrl+L     { move-column-right-or-to-monitor-right; }
+
+    Mod+G              hotkey-overlay-title="Focus monitor left" { focus-monitor-left; }
+    Mod+SemiColon      hotkey-overlay-title="Focus monitor right" { focus-monitor-right; }
+    Mod+Ctrl+G         hotkey-overlay-title="Move column to first" { move-column-to-first; }
+    Mod+Ctrl+SemiColon hotkey-overlay-title="Move column to last" { move-column-to-last; }
+    Mod+Home           { focus-column-first; }
+    Mod+End            { focus-column-last; }
+    Mod+Ctrl+Home      { move-column-to-first; }
+    Mod+Ctrl+End       { move-column-to-last; }
+
+    Mod+MouseMiddle             hotkey-overlay-title="Close focused window" { close-window; }
+    Mod+WheelScrollDown         { focus-column-right; }
+    Mod+WheelScrollUp           { focus-column-left; }
+    Mod+Ctrl+WheelScrollDown    hotkey-overlay-title="Move column right"  { move-column-right; }
+    Mod+Ctrl+WheelScrollUp      { move-column-left; }
+    // Mod+WheelScrollRight      hotkey-overlay-title="Focus column right" { focus-column-right; }
+    // Mod+WheelScrollLeft       hotkey-overlay-title="Focus column left" { focus-column-left; }
+    // Mod+Ctrl+WheelScrollRight hotkey-overlay-title="Move column right" { move-column-right; }
+    // Mod+Ctrl+WheelScrollLeft  hotkey-overlay-title="Move column left" { move-column-left; }
+
+
+    // Multiple monitor window and column movement.
+    Mod+Ctrl+Shift+Left  hotkey-overlay-title="Move column to left monitor" { move-column-to-monitor-left; }
+    Mod+Ctrl+Shift+Right hotkey-overlay-title="Move column to right monitor" { move-column-to-monitor-right; }
+    Mod+Ctrl+Shift+H     hotkey-overlay-title="Move column to left monitor" { move-column-to-monitor-left; }
+    Mod+Ctrl+Shift+L     hotkey-overlay-title="Move column to right monitor" { move-column-to-monitor-right; }
+
+    MouseBack               hotkey-overlay-title="Focus left column" { focus-column-left; }
+    MouseForward             { focus-column-right; }
+    Mod+Shift+Left              hotkey-overlay-title="Focus monitor left"  { focus-monitor-left; }
+    Mod+Shift+Right             hotkey-overlay-title="Focus monitor right" { focus-monitor-right; }
+    Mod+Ctrl+Shift+MouseBack    hotkey-overlay-title="Move column to left monitor" { move-column-to-monitor-left; }
+    Mod+Ctrl+Shift+MouseForward hotkey-overlay-title="Move column to right monitor" { move-column-to-monitor-right; }
+
+
+    // Workspaces.
+    Mod+Shift+WheelScrollDown      cooldown-ms=150 hotkey-overlay-title="Focus next workspace" { focus-workspace-down; }
+    Mod+Shift+WheelScrollUp        cooldown-ms=150 hotkey-overlay-title="Focus previous workspace" { focus-workspace-up; }
+    Mod+Ctrl+Shift+WheelScrollDown cooldown-ms=150 hotkey-overlay-title="Move column to next workspace" { move-column-to-workspace-down; }
+    Mod+Ctrl+Shift+WheelScrollUp   cooldown-ms=150 hotkey-overlay-title="Move column to previous workspace" { move-column-to-workspace-up; }
+
+    Mod+D               hotkey-overlay-title="Focus next workspace" { focus-workspace-down; }
+    Mod+U               hotkey-overlay-title="Focus previous workspace" { focus-workspace-up; }
+    Mod+Page_Down       { focus-workspace-down; }
+    Mod+Page_Up         { focus-workspace-up; }
+    Mod+Ctrl+D          hotkey-overlay-title="Move column to next workspace" { move-column-to-workspace-down; }
+    Mod+Ctrl+U          hotkey-overlay-title="Move column to previous workspace" { move-column-to-workspace-up; }
+    Mod+Ctrl+Page_Down  { move-column-to-workspace-down; }
+    Mod+Ctrl+Page_Up    { move-column-to-workspace-up; }
+    Mod+Shift+D         hotkey-overlay-title="Move workspace down" { move-workspace-down; }
+    Mod+Shift+U         hotkey-overlay-title="Move workspace up" { move-workspace-up; }
+    Mod+Shift+Page_Down { move-workspace-down; }
+    Mod+Shift+Page_Up   { move-workspace-up; }
+
+    Mod+1 hotkey-overlay-title="Focus workspace 1" { focus-workspace 1; }
+    Mod+2 { focus-workspace 2; }
+    Mod+3 { focus-workspace 3; }
+    Mod+4 { focus-workspace 4; }
+    Mod+5 { focus-workspace 5; }
+    Mod+6 { focus-workspace 6; }
+    Mod+7 { focus-workspace 7; }
+    Mod+8 { focus-workspace 8; }
+    Mod+9 { focus-workspace 9; }
+
+    Mod+Ctrl+1 hotkey-overlay-title="Move column to workspace 1" { move-column-to-workspace 1; }
+    Mod+Ctrl+2 { move-column-to-workspace 2; }
+    Mod+Ctrl+3 { move-column-to-workspace 3; }
+    Mod+Ctrl+4 { move-column-to-workspace 4; }
+    Mod+Ctrl+5 { move-column-to-workspace 5; }
+    Mod+Ctrl+6 { move-column-to-workspace 6; }
+    Mod+Ctrl+7 { move-column-to-workspace 7; }
+    Mod+Ctrl+8 { move-column-to-workspace 8; }
+    Mod+Ctrl+9 { move-column-to-workspace 9; }
+
+    // Screenshots
+    Print { screenshot show-pointer=false; }
+    Ctrl+Print { screenshot-screen show-pointer=false; }
+    Alt+Print { screenshot-window; }
+
+    // System
+    Mod+Shift+E hotkey-overlay-title="Quit niri" { quit; }
+    Mod+Shift+P hotkey-overlay-title="Power off monitors" { power-off-monitors; }
+}

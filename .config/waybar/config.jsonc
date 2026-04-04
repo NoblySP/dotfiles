@@ -1,0 +1,150 @@
+{
+  "layer": "top",
+  "position": "top",
+  "height": 32,
+  "spacing": 10,
+
+  "modules-left": [
+    "niri/workspaces",
+    "niri/window",
+    "custom/column-size"
+  ],
+
+  "modules-center": [
+    "clock"
+  ],
+
+  "modules-right": [
+    "tray",
+    "pulseaudio",
+    "network",
+    "bluetooth",
+    "cpu",
+    "memory",
+    "battery",
+    "custom/clipboard",
+    "custom/power"
+  ],
+
+
+  "niri/workspaces": {
+    "format": "{index}",
+    "all-outputs": false,
+    "on-click": "activate",
+    "on-scroll-up": "niri msg action focus-workspace-up",
+    "on-scroll-down": "niri msg action focus-workspace-down"
+  },
+
+  "niri/window": {
+    "format": "{title}",
+    "icon": true,
+    "icon-size": 16,
+    "separate-outputs": true,
+    "min-length": 20,
+    "max-length": 20,
+    "align": 0,
+    "on-click": "niri msg action close-window",
+    "on-click-right": "niri msg action toggle-overview",
+    "on-scroll-up": "niri msg action focus-column-left",
+    "on-scroll-down": "niri msg action focus-column-right"
+  },
+
+  "custom/column-size": {
+    "format": "󰘖",
+    "tooltip": true,
+    "tooltip-format": "3 Clicks to set | Scroll to cycle",
+    "on-scroll-up": "niri msg action set-column-width \"+33%\"",
+    "on-scroll-down": "niri msg action set-column-width \"-33%\"",
+    "on-click": "niri msg action maximize-column",
+    "on-click-right": "niri msg action set-column-width \"50%\""
+  },
+
+
+  "clock": {
+    "interval": 1,
+    "locale": "en_GB.UTF-8",
+    "format": "{:%a %b %d %H:%M}",
+    "format-alt": "{:%a %b %d %H:%M:%S}",
+    "tooltip": true,
+    "tooltip-format": "<tt>{calendar}</tt>",
+    "calendar": {
+      "mode": "month",
+      "on-scroll": 1,
+      "format": {
+        "months": "<span color='#ffead3'><b>{}</b></span>",
+        "days": "<span color='#e6d5dd'><b>{}</b></span>",
+        "weekdays": "<span color='#ffcc66'><b>{}</b></span>",
+        "today": "<span color='#ff6699'><b><u>{}</u></b></span>"
+      }
+    },
+    "actions": {
+      "on-scroll-up": "shift_up",
+      "on-scroll-down": "shift_down"
+    }
+  },
+
+
+  "tray": {
+    "icon-size": 16,
+    "spacing": 8,
+    "show-passive-items": true
+  },
+
+  "pulseaudio": {
+    "format": "{icon} {volume}%",
+    "format-muted": "󰝟 muted",
+    "format-icons": {
+      "default": ["󰕿", "󰖀", "󰕾"]
+    },
+    "on-click": "pavucontrol"
+  },
+
+  "network": {
+    "format-wifi": "",
+    "format-disconnected": "󰖪",
+    "tooltip-format": "SSID: {essid}\nSignal: {signaldBm}dBm",
+    "on-click": "nm-connection-editor"
+  },
+
+  "bluetooth": {
+    "format": "",
+    "format-disabled": "",
+    "format-off": "",
+    "format-on": "",
+    "format-connected": " {num_connections}",
+    "tooltip-format": "{controller_alias}\t{controller_address}",
+    "tooltip-format-connected": "{controller_alias}\t{controller_address}\n\n{num_connections} connected\n\n{device_enumerate}",
+    "tooltip-format-enumerate-connected": "{device_alias}",
+    "on-click": "blueman-manager"
+  },
+
+  "cpu": {
+    "format": "󰍛 {usage}%",
+    "on-click": "foot -e btop"
+  },
+
+  "memory": {
+    "format": "󰓅 {}%", //  󰾆
+    "on-click": "~/.config/waybar/scripts/top-ram.sh"
+  },
+
+  "battery": {
+    "format": "{icon} {capacity}%",
+    "format-charging": " {capacity}%",
+    "format-plugged": " {capacity}%",
+    "format-full": " {capacity}%",
+    "format-icons": ["", "", "", "", ""]
+  },
+
+  "custom/clipboard": {
+    "format": "",
+    "tooltip": false,
+    "on-click": "cliphist list | fuzzel --dmenu --keyboard-focus=on-demand | cliphist decode | wl-copy"
+  },
+
+  "custom/power": {
+    "format": "⏻",
+    "tooltip": false,
+    "on-click": "~/.config/waybar/scripts/power-menu.sh"
+  }
+}
