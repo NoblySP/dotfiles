@@ -15,7 +15,7 @@ spawn-at-startup "wl-clip-persist" "--clipboard" "regular"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
 // spawn-at-startup "/opt/OpenWhispr/open-whispr"
-// spawn-at-startup "/home/noblysp/.local/bin/openwhispr-x11"
+// spawn-at-startup "~/.local/bin/openwhispr-x11"
 
 // ----------------------------------------------------------------------------
 // Input devices
@@ -152,7 +152,7 @@ window-rule {
 // ----------------------------------------------------------------------------
 
 binds {
-    Mod+Shift+A repeat=false hotkey-overlay-title="Open OpenWhispr" { spawn "/home/noblysp/.local/bin/openwhispr-x11"; }
+    Mod+Shift+A repeat=false hotkey-overlay-title="Open OpenWhispr" { spawn "~/.local/bin/openwhispr-x11"; }
 
     // Overview and Help
     Mod+Slash hotkey-overlay-title="Show hotkey overlay" { show-hotkey-overlay; }
