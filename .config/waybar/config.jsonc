@@ -133,7 +133,8 @@
     "format-charging": " {capacity}%",
     "format-plugged": " {capacity}%",
     "format-full": " {capacity}%",
-    "format-icons": ["", "", "", "", ""]
+    "format-icons": ["", "", "", "", ""],
+    "states": { "warning": 20, "critical": 7 }
   },
 
   "custom/clipboard": {

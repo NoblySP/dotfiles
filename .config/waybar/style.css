@@ -12,6 +12,7 @@ window#waybar {
 /* Individual module spacing */
 #workspaces button,
 #window,
+#custom-column-size,
 #clock,
 #pulseaudio,
 #network,
@@ -41,8 +42,26 @@ window#waybar {
     color: #f38ba8;
 }
 
+#custom-column-size {
+    font-size: 16px;   /* slightly larger icon */
+    padding: 0 8px;
+    margin: 0 2px;
+    min-width: 20px;
+}
+
+
 tooltip {
   background: rgba(24, 24, 37, 1);
   border: 1px solid rgba(205, 214, 244, 0.18);
 }
 
+
+#battery.warning {
+  color: #ffd700;
+  font-weight: bold;
+}
+
+#battery.critical {
+  color: #f38ba8;
+  font-weight: bold;
+}
