@@ -7,6 +7,7 @@ set hlsearch " highlight search results
 set expandtab " turn tabs into spaces
 set autoindent
 set smartindent
+set nomodeline
 syntax enable
 
 " Force cursor shape changes using terminal escape codes
