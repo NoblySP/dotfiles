@@ -136,6 +136,7 @@ window-rule {
 
 window-rule {
     match app-id=r#"firefox$"#
+    match app-id=r#"^google-chrome$"#
     open-maximized true
 }
 
