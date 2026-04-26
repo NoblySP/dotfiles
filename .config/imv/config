@@ -1,0 +1,29 @@
+[options]
+background = 1e1e2e
+overlay = true
+overlay_position_bottom = true
+overlay_font = monospace:10
+overlay_text = $imv_current_file  [${imv_width}x${imv_height}]
+
+[binds]
+# Edit in Satty
+<Ctrl+e> = exec satty --filename "$imv_current_file" </dev/null >/dev/null 2>&1 &
+
+# Copy image to clipboard (both 'y' and 'Ctrl+c')
+y = exec wl-copy < "$imv_current_file" && notify-send "Clipboard" "Image copied" &
+<Ctrl+c> = exec wl-copy < "$imv_current_file" && notify-send "Clipboard" "Image copied" &
+
+# OCR (Leetspeak optimized)
+<Ctrl+Shift+c> = exec tesseract "$imv_current_file" stdout -c load_system_dawg=0 -c load_freq_dawg=0 --psm 6 </dev/null | wl-copy && notify-send "OCR" "Copied text to clipboard" &
+
+# Send via Tailscale
+<Ctrl+t> = exec tailscale file cp "$imv_current_file" rhine: </dev/null && notify-send "Tailscale" "File sent to rhine" || notify-send "Tailscale" "rhine is offline or unreachable" &
+
+# Image Stats Notification
+<Ctrl+i> = exec notify-send "Image Stats" "Index: [$imv_current_index/$imv_file_count]\nZoom: $imv_scale%\nRes: ${imv_width}x${imv_height}" &
+
+# Explicitly bind rotation to bypass any Wayland/default bind issues
+<Ctrl+r> = rotate by 90
+
+# Zoom in without needing to press Shift
+<equal> = zoom 1
