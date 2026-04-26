@@ -102,8 +102,8 @@
   "network": {
     "format-wifi": "",
     "format-disconnected": "󰖪",
-    "tooltip-format": "SSID: {essid}\nSignal: {signaldBm}dBm",
-    "on-click": "nm-connection-editor"
+    "tooltip-format": "SSID: {essid}\nSignal: {signalStrength}%",
+    "on-click": "foot --title 'Network Manager' -e nmtui"
   },
 
   "bluetooth": {

@@ -143,6 +143,7 @@ window-rule {
 
 window-rule {
     match title="Bluetooth Manager"
+    match title="Network Manager"
     open-floating true
     default-column-width { proportion 0.4; }
 }
