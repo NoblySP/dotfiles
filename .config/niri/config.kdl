@@ -142,6 +142,12 @@ window-rule {
 }
 
 window-rule {
+    match title="Bluetooth Manager"
+    open-floating true
+    default-column-width { proportion 0.4; }
+}
+
+window-rule {
     match app-id=r#"^dot\.floating\.terminal$"#
 
     open-floating true
