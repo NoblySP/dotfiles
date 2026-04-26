@@ -14,7 +14,7 @@ y = exec wl-copy < "$imv_current_file" && notify-send "Clipboard" "Image copied"
 <Ctrl+c> = exec wl-copy < "$imv_current_file" && notify-send "Clipboard" "Image copied" &
 
 # OCR (Leetspeak optimized)
-<Ctrl+Shift+c> = exec tesseract "$imv_current_file" stdout -c load_system_dawg=0 -c load_freq_dawg=0 --psm 6 </dev/null | wl-copy && notify-send "OCR" "Copied text to clipboard" &
+<Ctrl+Shift+C> = exec tesseract "$imv_current_file" stdout -c load_system_dawg=0 -c load_freq_dawg=0 --psm 6 </dev/null | wl-copy && notify-send "OCR" "Copied text to clipboard" &
 
 # Send via Tailscale
 <Ctrl+t> = exec tailscale file cp "$imv_current_file" rhine: </dev/null && notify-send "Tailscale" "File sent to rhine" || notify-send "Tailscale" "rhine is offline or unreachable" &
