@@ -11,7 +11,7 @@ spawn-at-startup "swayidle" "-w" \
     "resume" "niri msg action power-on-monitors" \
     "timeout" "360" "hyprlock" \
     "timeout" "1200" "systemctl suspend" \
-    "before-sleep" "swaylock -f -c 1f1f1f"
+    "before-sleep" "hyprlock"
 spawn-at-startup "wl-clip-persist" "--clipboard" "regular"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
