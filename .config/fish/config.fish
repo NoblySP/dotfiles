@@ -26,3 +26,6 @@ zoxide init fish --cmd cd | source
 
 # Initialize fzf
 fzf --fish | source
+
+# Open folder in Files (Ctrl+O)
+bind -M insert \co 'xdg-open . >/dev/null 2>&1 & disown; commandline -f repaint'
