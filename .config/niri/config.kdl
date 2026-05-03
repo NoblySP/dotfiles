@@ -52,8 +52,8 @@ output "eDP-1" {
 }
 
 // External 27" on HDMI
-output "HDMI-A-1" {
-    scale 1.25
+output "DP-3" {
+    scale 1.20
     transform "normal"
     mode "2560x1440@99.965"
     // With 1.25x scaling, laptop logical width = 1920 / 1.25 = 1536
