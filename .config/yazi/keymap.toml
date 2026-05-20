@@ -20,6 +20,17 @@ on   = "O"
 run  = 'shell --orphan -- foot "$EDITOR" "%h"'
 desc = "Open hovered file in new foot window"
 
+# Swap z and Z behavior
+[[mgr.prepend_keymap]]
+on   = "z"
+run  = "plugin zoxide --args='--cd'"
+desc = "Zoxide instant jump (previously Z)"
+
+# Swap z and Z behavior
+[[mgr.prepend_keymap]]
+on   = "Z"
+run  = "plugin zoxide"
+desc = "Zoxide interactive filter (previously z)"
 
 [[mgr.prepend_keymap]]
 on   = [ ",", "d" ]
