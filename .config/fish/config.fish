@@ -3,13 +3,14 @@ if status is-interactive
 end
 abbr --add gs git status
 abbr --add kvim vim -u ~/.vimrc-kernel
+abbr --add vim nvim
 abbr --add chef "xdg-open /opt/CyberChef_v10.22.1/CyberChef_v10.22.1.html"
 abbr --add e exit
 abbr --add q exit
 
 alias dots='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
-set -gx EDITOR vimx
+set -gx EDITOR nvim
 
 # Yazi shell wrapper
 function y
