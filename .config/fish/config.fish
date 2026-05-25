@@ -30,3 +30,5 @@ fzf --fish | source
 
 # Open folder in Files (Ctrl+O)
 bind -M insert \co 'xdg-open . >/dev/null 2>&1 & disown; commandline -f repaint'
+
+set -gx SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gcr/ssh"
