@@ -27,3 +27,6 @@ y = exec wl-copy < "$imv_current_file" && notify-send "Clipboard" "Image copied"
 
 # Zoom in without needing to press Shift
 <equal> = zoom 1
+
+# Delete image (Moves to trash, sends notification, and skips to next image)
+<Shift+D> = exec gio trash "$imv_current_file" && notify-send "imv" "Moved to trash"; close
