@@ -133,6 +133,13 @@ window-rule {
 }
 
 window-rule {
+    match app-id="file_chooser"
+    open-floating true
+    default-column-width { proportion 0.5; }
+    default-window-height { proportion 0.6; }
+}
+
+window-rule {
     match app-id=r#"firefox$"#
     match app-id=r#"^google-chrome$"#
     open-maximized true
