@@ -20,6 +20,7 @@ window#waybar {
 #cpu,
 #memory,
 #battery,
+#custom-kbd-mods,
 #custom-clipboard,
 #custom-power {
     padding: 0 7px;
@@ -55,6 +56,11 @@ tooltip {
   border: 1px solid rgba(205, 214, 244, 0.18);
 }
 
+
+#custom-kbd-mods {
+    min-width: 38px;
+    font-size: 12px;
+}
 
 #battery.warning {
   color: #ffd700;

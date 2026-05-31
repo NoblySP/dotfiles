@@ -6,12 +6,12 @@
 
   "modules-left": [
     "niri/workspaces",
-    "niri/window",
-    "custom/column-size"
+    "clock",
+"custom/column-size"
   ],
 
   "modules-center": [
-    "clock"
+    "niri/window"
   ],
 
   "modules-right": [
@@ -21,6 +21,7 @@
     "bluetooth",
     "cpu",
     "memory",
+    "custom/kbd-mods",
     "battery",
     "custom/clipboard",
     "custom/power"
@@ -40,16 +41,16 @@
     "icon": true,
     "icon-size": 16,
     "separate-outputs": true,
-    "min-length": 20,
-    "max-length": 20,
-    "align": 0,
+    "min-length": 30,
+    "max-length": 30,
+    "align": 0.5,
     "on-click": "niri msg action close-window",
     "on-click-right": "niri msg action toggle-overview",
     "on-scroll-up": "niri msg action focus-column-left",
     "on-scroll-down": "niri msg action focus-column-right"
   },
 
-  "custom/column-size": {
+"custom/column-size": {
     "format": "󰘖",
     "tooltip": true,
     "tooltip-format": "3 Clicks to set | Scroll to cycle",
@@ -141,6 +142,12 @@
     "format": "",
     "tooltip": false,
     "on-click": "cliphist list | fuzzel --dmenu --keyboard-focus=on-demand | cliphist decode | wl-copy"
+  },
+
+  "custom/kbd-mods": {
+    "exec": "~/.config/waybar/scripts/kbd-mods.py",
+    "return-type": "json",
+    "restart-interval": 5
   },
 
   "custom/power": {
