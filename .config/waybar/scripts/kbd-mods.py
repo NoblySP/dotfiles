@@ -1,28 +1,36 @@
 #!/usr/bin/env python3
 """Waybar module: crkbd modifier and layer indicator.
 
-Uses EVIOCGKEY polling (active_keys) to read the crkbd's current key state
-directly from the kernel, bypassing any evdev grab by keyd.
+Modifiers (Shift, Ctrl, Alt, Super) are detected via evdev active_keys().
 
-Modifiers (Shift, Ctrl, Alt, Super) are detected immediately.
-Layers are inferred from which keys are actively pressed:
-  - L2 (nav/symbols): navigation keys appear only on Layer 2
-  - L3 (numbers):     number keys only appear on Layer 3 on the crkbd
-                      (the crkbd has no physical number row)
-  - L4 (mouse):       mouse scroll/button events on Layer 4
+Layer changes are detected via a firmware push: layer_state_set_user() in the
+Vial QMK firmware calls raw_hid_send() with command byte 0xA0 and the new
+layer number every time the layer state changes.  The via_layer_monitor thread
+does a blocking read on the Vial raw HID device (/dev/hidraw*) and updates a
+shared variable instantly — no polling, no tapping-term wait.
 """
 
 import json
+import os
+import re
 import sys
+import threading
 import time
+from pathlib import Path
 
 import evdev
 from evdev import ecodes
 
-DEVICE_NAME = "foostan Corne v4"
-POLL_HZ = 50  # polls per second
+# ── device ────────────────────────────────────────────────────────────────────
+DEVICE_NAME  = "foostan Corne v4"
+CORNE_HID_ID = "00004653:00000004"
+POLL_HZ      = 50
 
-# Modifier keycodes → display label
+# ── firmware push protocol ────────────────────────────────────────────────────
+LAYER_STATUS_CMD = 0xA0   # must match #define in keymap.c
+MSG_LEN          = 32
+
+# ── modifier labels ───────────────────────────────────────────────────────────
 MOD_LABELS: dict[int, str] = {
     ecodes.KEY_LEFTSHIFT:  "Sft",
     ecodes.KEY_RIGHTSHIFT: "Sft",
@@ -34,47 +42,99 @@ MOD_LABELS: dict[int, str] = {
     ecodes.KEY_RIGHTMETA:  "Sup",
 }
 
-# Layer 2 (nav/symbols) indicator keys — never present in crkbd base layers
+# evdev keys used to infer layer when VIA push is unavailable (fallback)
 L2_KEYS = frozenset({
     ecodes.KEY_LEFT, ecodes.KEY_RIGHT,
-    ecodes.KEY_UP, ecodes.KEY_DOWN,
+    ecodes.KEY_UP,   ecodes.KEY_DOWN,
     ecodes.KEY_HOME, ecodes.KEY_END,
 })
-
-# Layer 3 (numbers) indicator keys — crkbd has no top number row, so digits
-# only appear when Layer 3 is active
 L3_KEYS = frozenset({
     ecodes.KEY_1, ecodes.KEY_2, ecodes.KEY_3,
     ecodes.KEY_4, ecodes.KEY_5, ecodes.KEY_6,
     ecodes.KEY_7, ecodes.KEY_8, ecodes.KEY_9,
     ecodes.KEY_0,
 })
-
-# Layer 4 (mouse) indicator — these are the scroll keycodes QMK sends
-L4_KEYS = frozenset({
-    ecodes.KEY_SCROLLLOCK,  # placeholder; QMK mouse layer sends BTN events
-})
-
-# Pango markup colors (Catppuccin Mocha palette)
-COLORS = {
-    "Sft":  "#89dceb",   # sky
-    "Ctl":  "#f38ba8",   # red
-    "Alt":  "#a6e3a1",   # green
-    "Sup":  "#cba6f7",   # mauve
-    "L2":   "#f9e2af",   # yellow
-    "L3":   "#fab387",   # peach
-    "L4":   "#94e2d5",   # teal
-    "idle": "#45475a",   # surface2 (dim)
-}
-
 SHIFT_KEYS = frozenset({ecodes.KEY_LEFTSHIFT, ecodes.KEY_RIGHTSHIFT})
 
+# ── Catppuccin Mocha colours ──────────────────────────────────────────────────
+COLORS = {
+    "Sft":  "#89dceb",
+    "Ctl":  "#f38ba8",
+    "Alt":  "#a6e3a1",
+    "Sup":  "#cba6f7",
+    "L2":   "#f9e2af",
+    "L3":   "#fab387",
+    "L4":   "#94e2d5",
+    "idle": "#45475a",
+}
 
+# ── shared layer state (written by monitor thread, read by main loop) ─────────
+_via_layer = 0
+_via_lock  = threading.Lock()
+
+
+# ── helpers ───────────────────────────────────────────────────────────────────
 def span(text: str, color: str, bold: bool = True) -> str:
     inner = f"<b>{text}</b>" if bold else text
     return f'<span foreground="{color}">{inner}</span>'
 
 
+# ── Vial raw HID discovery ────────────────────────────────────────────────────
+def find_via_hidraw() -> str | None:
+    """Return the /dev/hidrawN path for the Corne's Vial raw HID interface."""
+    try:
+        for name in sorted(os.listdir("/sys/class/hidraw")):
+            uevent_path = f"/sys/class/hidraw/{name}/device/uevent"
+            try:
+                uevent = Path(uevent_path).read_text()
+                # input1 = VIA/Vial raw HID interface (not input0 = keyboard)
+                if CORNE_HID_ID in uevent and re.search(r"/input1\b", uevent):
+                    return f"/dev/{name}"
+            except OSError:
+                pass
+    except OSError:
+        pass
+    return None
+
+
+# ── layer push monitor thread ─────────────────────────────────────────────────
+def via_layer_monitor() -> None:
+    """Daemon thread: block-read the Vial HID device for layer-push events."""
+    global _via_layer
+
+    def open_device():
+        path = find_via_hidraw()
+        if not path:
+            return None
+        try:
+            return open(path, "rb", buffering=0)
+        except OSError:
+            return None
+
+    dev = open_device()
+
+    while True:
+        if dev is None:
+            time.sleep(2)
+            dev = open_device()
+            continue
+
+        try:
+            data = dev.read(MSG_LEN)
+        except OSError:
+            try:
+                dev.close()
+            except OSError:
+                pass
+            dev = None
+            continue
+
+        if len(data) >= 2 and data[0] == LAYER_STATUS_CMD:
+            with _via_lock:
+                _via_layer = data[1]
+
+
+# ── output builder ─────────────────────────────────────────────────────────────
 def build_output(active: frozenset[int]) -> dict:
     parts: list[str] = []
     tooltip_parts: list[str] = []
@@ -96,20 +156,30 @@ def build_output(active: frozenset[int]) -> dict:
                 tooltip_parts.append(label)
                 classes.append(f"mod-{label.lower()}")
 
-    # Layer inference
+    # Layer: firmware push is authoritative; evdev keys are the fallback
+    with _via_lock:
+        via = _via_layer
+
     has_nav     = bool(active & L2_KEYS)
     has_numbers = bool(active & L3_KEYS)
     has_shift   = bool(active & SHIFT_KEYS)
 
-    if has_nav:
+    on_l2 = via == 2 or has_nav
+    on_l3 = via == 3 or (has_numbers and not has_shift)
+    on_l4 = via == 4
+
+    if on_l2:
         parts.append(span("L2", COLORS["L2"]))
         tooltip_parts.append("Layer 2 (Nav/Sym)")
         classes.append("layer2")
-    elif has_numbers and not has_shift:
-        # numbers + no shift = Layer 3; numbers + shift = Layer 2 LSFT(KC_n) symbols
+    elif on_l3:
         parts.append(span("L3", COLORS["L3"]))
         tooltip_parts.append("Layer 3 (Num)")
         classes.append("layer3")
+    elif on_l4:
+        parts.append(span("L4", COLORS["L4"]))
+        tooltip_parts.append("Layer 4 (Mouse)")
+        classes.append("layer4")
 
     if not parts:
         text = span("⌨", COLORS["idle"], bold=False)
@@ -123,6 +193,7 @@ def build_output(active: frozenset[int]) -> dict:
     return {"text": text, "class": css, "tooltip": tip}
 
 
+# ── evdev device discovery ─────────────────────────────────────────────────────
 def find_crkbd() -> list[evdev.InputDevice]:
     devices: list[evdev.InputDevice] = []
     for path in evdev.list_devices():
@@ -135,6 +206,7 @@ def find_crkbd() -> list[evdev.InputDevice]:
     return devices
 
 
+# ── main loop ──────────────────────────────────────────────────────────────────
 def main() -> None:
     devices = find_crkbd()
 
@@ -145,7 +217,6 @@ def main() -> None:
             "tooltip": "crkbd: not connected",
         }
         print(json.dumps(out), flush=True)
-        # Keep running so waybar doesn't spam restarts; re-check every 5s
         while True:
             time.sleep(5)
             devices = find_crkbd()
@@ -154,21 +225,24 @@ def main() -> None:
         main()
         return
 
-    interval = 1.0 / POLL_HZ
+    # Start Vial layer-push listener in background
+    t = threading.Thread(target=via_layer_monitor, daemon=True)
+    t.start()
+
+    interval  = 1.0 / POLL_HZ
     last_json = ""
 
     while True:
         active: set[int] = set()
-        alive: list[evdev.InputDevice] = []
+        alive:  list[evdev.InputDevice] = []
         for dev in devices:
             try:
                 active.update(dev.active_keys())
                 alive.append(dev)
             except OSError:
-                pass  # device disappeared; drop it
+                pass
 
         if not alive:
-            # All devices gone — restart detection
             main()
             return
 

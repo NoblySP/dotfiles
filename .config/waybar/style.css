@@ -62,6 +62,29 @@ tooltip {
     font-size: 12px;
 }
 
+/* Voxtype dictation indicator: always visible, gray when idle */
+#custom-voxtype.idle,
+#custom-voxtype.recording,
+#custom-voxtype.streaming,
+#custom-voxtype.transcribing {
+    padding: 0 7px;
+    margin: 0 2px;
+    font-size: 14px;
+}
+
+#custom-voxtype.idle {
+    color: #6c7086;
+}
+
+#custom-voxtype.recording,
+#custom-voxtype.streaming {
+    color: #f38ba8;
+}
+
+#custom-voxtype.transcribing {
+    color: #f9e2af;
+}
+
 #battery.warning {
   color: #ffd700;
   font-weight: bold;

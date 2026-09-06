@@ -1,12 +1,15 @@
 if status is-interactive
     # Commands to run in interactive sessions can go here
 end
+
 abbr --add gs git status
 abbr --add kvim vim -u ~/.vimrc-kernel
 abbr --add vim nvim
 abbr --add chef "xdg-open /opt/CyberChef_v10.22.1/CyberChef_v10.22.1.html"
 abbr --add e exit
 abbr --add q exit
+abbr --add tcp tailscale file cp
+abbr --add k kubectl
 
 alias dots='git --git-dir=$HOME/.dotfiles/ --work-tree=$HOME'
 
@@ -32,3 +35,6 @@ fzf --fish | source
 bind -M insert \co 'xdg-open . >/dev/null 2>&1 & disown; commandline -f repaint'
 
 set -gx SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gcr/ssh"
+
+# opencode
+fish_add_path /home/noblysp/.opencode/bin

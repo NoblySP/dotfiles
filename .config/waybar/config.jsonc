@@ -15,6 +15,7 @@
   ],
 
   "modules-right": [
+    "custom/voxtype",
     "tray",
     "pulseaudio",
     "network",
@@ -64,6 +65,7 @@
   "clock": {
     "interval": 1,
     "locale": "en_GB.UTF-8",
+    "smooth-scrolling-threshold": 1.0,
     "format": "{:%a %b %d %H:%M}",
     "format-alt": "{:%a %b %d %H:%M:%S}",
     "tooltip": true,
@@ -97,7 +99,8 @@
     "format-icons": {
       "default": ["󰕿", "󰖀", "󰕾"]
     },
-    "on-click": "pavucontrol"
+    "on-click": "wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle",
+    "on-click-right": "pavucontrol"
   },
 
   "network": {
@@ -148,6 +151,15 @@
     "exec": "~/.config/waybar/scripts/kbd-mods.py",
     "return-type": "json",
     "restart-interval": 5
+  },
+
+  "custom/voxtype": {
+    "exec": "~/.config/waybar/scripts/voxtype-status.py",
+    "return-type": "json",
+    "format": "{}",
+    "tooltip": true,
+    "on-click": "voxtype record toggle",
+    "on-click-right": "~/.config/waybar/scripts/voxtype-model-menu.py"
   },
 
   "custom/power": {

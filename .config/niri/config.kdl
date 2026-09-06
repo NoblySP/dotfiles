@@ -11,8 +11,6 @@ spawn-at-startup "wl-clip-persist" "--clipboard" "regular"
 spawn-at-startup "wl-paste" "--type" "text" "--watch" "cliphist" "store"
 spawn-at-startup "wl-paste" "--type" "image" "--watch" "cliphist" "store"
 spawn-at-startup "cliphist" "wipe"
-// spawn-at-startup "/opt/OpenWhispr/open-whispr"
-// spawn-at-startup "~/.local/bin/openwhispr-x11"
 
 // ----------------------------------------------------------------------------
 // Input devices
@@ -30,8 +28,9 @@ input {
     touchpad {
         tap
         natural-scroll
-        accel-speed 0.5
+        accel-speed 0.2
         accel-profile "adaptive"
+        dwt
     }
 
     mouse {
@@ -63,6 +62,14 @@ output "DP-3" {
     focus-at-startup
 }
 
+// Ultra wide monitor
+output "HDMI-A-1" {
+    scale 1.20
+    transform "normal"
+    mode "3440x1440@49.987"
+    position x=1536 y=0
+    focus-at-startup
+}
 
 
 // ----------------------------------------------------------------------------
@@ -90,6 +97,8 @@ prefer-no-csd
 screenshot-path "~/Pictures/Screenshots/Screenshot from %Y-%m-%d %H-%M-%S.png"
 
 layout {
+    // center-focused-column "always"  // Remove later on
+
     gaps 6
     
     focus-ring {
@@ -142,6 +151,7 @@ window-rule {
 window-rule {
     match app-id=r#"firefox$"#
     match app-id=r#"^google-chrome$"#
+    match app-id=r#"thunderbird"#
     open-maximized true
 }
 
@@ -166,8 +176,6 @@ window-rule {
 // ----------------------------------------------------------------------------
 
 binds {
-    Mod+Shift+A repeat=false hotkey-overlay-title="Open OpenWhispr" { spawn "~/.local/bin/openwhispr-x11"; }
-
     // Overview and Help
     Mod+Slash hotkey-overlay-title="Show hotkey overlay" { show-hotkey-overlay; }
     Mod+O repeat=false hotkey-overlay-title="Toggle overview" { toggle-overview; }
@@ -178,6 +186,7 @@ binds {
     Mod+V {
         spawn "~/.config/fuzzel/clipboard-paste.sh"
     }
+    F8 hotkey-overlay-title="Dictate (voxtype)" { spawn "voxtype" "record" "toggle"; }
     Mod+E { spawn "nautilus"; }
     Mod+B { spawn "firefox"; }
     Mod+Shift+B { spawn "firefox" "--private-window"; }
@@ -275,15 +284,15 @@ binds {
 
 
     // Multiple monitor window and column movement.
-    Mod+Ctrl+Shift+Left  hotkey-overlay-title="Move column to left monitor" { move-column-to-monitor-left; }
-    Mod+Ctrl+Shift+Right hotkey-overlay-title="Move column to right monitor" { move-column-to-monitor-right; }
-    Mod+Ctrl+Shift+H     hotkey-overlay-title="Move column to left monitor" { move-column-to-monitor-left; }
-    Mod+Ctrl+Shift+L     hotkey-overlay-title="Move column to right monitor" { move-column-to-monitor-right; }
+    // Mod+Ctrl+Shift+Left  hotkey-overlay-title="Move column to left monitor" { move-column-to-monitor-left; }
+    // Mod+Ctrl+Shift+Right hotkey-overlay-title="Move column to right monitor" { move-column-to-monitor-right; }
+    // Mod+Ctrl+Shift+H     hotkey-overlay-title="Move column to left monitor" { move-column-to-monitor-left; }
+    // Mod+Ctrl+Shift+L     hotkey-overlay-title="Move column to right monitor" { move-column-to-monitor-right; }
 
     MouseBack               hotkey-overlay-title="Focus left column" { focus-column-left; }
     MouseForward             { focus-column-right; }
-    Mod+Shift+Left              hotkey-overlay-title="Focus monitor left"  { focus-monitor-left; }
-    Mod+Shift+Right             hotkey-overlay-title="Focus monitor right" { focus-monitor-right; }
+    Mod+Ctrl+Shift+H hotkey-overlay-title="Move workspace to left monitor"  { move-workspace-to-monitor-left; }
+    Mod+Ctrl+Shift+L hotkey-overlay-title="Move workspace to right monitor"  { move-workspace-to-monitor-right; }
     Mod+Ctrl+Shift+MouseBack    hotkey-overlay-title="Move column to left monitor" { move-column-to-monitor-left; }
     Mod+Ctrl+Shift+MouseForward hotkey-overlay-title="Move column to right monitor" { move-column-to-monitor-right; }
 
