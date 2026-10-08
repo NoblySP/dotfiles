@@ -21,6 +21,7 @@ window#waybar {
 #memory,
 #battery,
 #custom-kbd-mods,
+#custom-sticky-shift,
 #custom-clipboard,
 #custom-power {
     padding: 0 7px;
@@ -60,6 +61,29 @@ tooltip {
 #custom-kbd-mods {
     min-width: 38px;
     font-size: 12px;
+}
+
+/* Clickable photo navigation, shown only while an imv window is focused. */
+#custom-sticky-shift.idle,
+#custom-sticky-shift.disabled { color: #6c7086; }
+#custom-sticky-shift.active { color: #89dceb; font-weight: bold; }
+#custom-sticky-shift.unavailable { color: #f9e2af; }
+
+#custom-imv-prev.active,
+#custom-imv-next.active {
+    color: #89b4fa;
+    font-size: 20px;
+    min-width: 24px;
+    padding: 0 7px;
+    margin: 0 2px;
+}
+
+#custom-imv-prev.inactive,
+#custom-imv-next.inactive {
+    font-size: 0;
+    min-width: 0;
+    padding: 0;
+    margin: 0;
 }
 
 /* Voxtype dictation indicator: always visible, gray when idle */

@@ -11,7 +11,9 @@
   ],
 
   "modules-center": [
-    "niri/window"
+    "custom/imv-prev",
+    "niri/window",
+    "custom/imv-next"
   ],
 
   "modules-right": [
@@ -23,6 +25,7 @@
     "cpu",
     "memory",
     "custom/kbd-mods",
+    "custom/sticky-shift",
     "battery",
     "custom/clipboard",
     "custom/power"
@@ -49,6 +52,20 @@
     "on-click-right": "niri msg action toggle-overview",
     "on-scroll-up": "niri msg action focus-column-left",
     "on-scroll-down": "niri msg action focus-column-right"
+  },
+
+  "custom/imv-prev": {
+    "exec": "~/.config/waybar/scripts/imv-nav.py status prev",
+    "return-type": "json",
+    "interval": 1,
+    "on-click": "~/.config/waybar/scripts/imv-nav.py prev"
+  },
+
+  "custom/imv-next": {
+    "exec": "~/.config/waybar/scripts/imv-nav.py status next",
+    "return-type": "json",
+    "interval": 1,
+    "on-click": "~/.config/waybar/scripts/imv-nav.py next"
   },
 
 "custom/column-size": {
@@ -151,6 +168,13 @@
     "exec": "~/.config/waybar/scripts/kbd-mods.py",
     "return-type": "json",
     "restart-interval": 5
+  },
+
+  "custom/sticky-shift": {
+    "exec": "python3 /home/noblysp/dev/laptop-shift/sticky-status.py",
+    "return-type": "json",
+    "restart-interval": 5,
+    "tooltip": true
   },
 
   "custom/voxtype": {
