@@ -1,0 +1,10 @@
+[Unit]
+Description=Restart waybar after system resume
+
+[Service]
+ExecStart=%h/.config/systemd/user/scripts/waybar-resume.sh
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=default.target

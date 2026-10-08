@@ -1,0 +1,12 @@
+[Unit]
+Description=Waybar
+# battery module crashes on resume; don't let burst-limiting leave the bar dead
+StartLimitIntervalSec=0
+
+[Service]
+ExecStart=/usr/bin/waybar
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=default.target
