@@ -33,7 +33,7 @@ transcribing = "⏳"
 # Key to hold for push-to-talk
 # Common choices: SCROLLLOCK, PAUSE, RIGHTALT, F13-F24
 # Use `evtest` to find key names for your keyboard
-key = "F8"
+key = "F9"
 cancel_key = "ESC"
 
 # Optional modifier keys that must also be held

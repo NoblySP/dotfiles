@@ -10,6 +10,10 @@ vim.opt.smartindent = true
 
 vim.opt.clipboard = "unnamedplus"
 
+-- Mouse in Normal/Visual mode only, so a stray click (e.g. palm on touchpad)
+-- can't move the cursor while typing in Insert mode.
+vim.opt.mouse = "nv"
+
 vim.opt.ignorecase = true -- case insensitive search
 vim.opt.smartcase = true -- case sensitive if uppercase in string
 vim.opt.hlsearch = true -- highlight search matches

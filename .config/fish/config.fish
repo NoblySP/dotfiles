@@ -3,6 +3,7 @@ if status is-interactive
 end
 
 abbr --add gs git status
+abbr --add gst git status
 abbr --add kvim vim -u ~/.vimrc-kernel
 abbr --add vim nvim
 abbr --add chef "xdg-open /opt/CyberChef_v10.22.1/CyberChef_v10.22.1.html"
@@ -38,3 +39,5 @@ set -gx SSH_AUTH_SOCK "$XDG_RUNTIME_DIR/gcr/ssh"
 
 # opencode
 fish_add_path /home/noblysp/.opencode/bin
+abbr --add oc opencode
+

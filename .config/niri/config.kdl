@@ -186,7 +186,7 @@ binds {
     Mod+V {
         spawn "~/.config/fuzzel/clipboard-paste.sh"
     }
-    F8 hotkey-overlay-title="Dictate (voxtype)" { spawn "voxtype" "record" "toggle"; }
+    F9 hotkey-overlay-title="Dictate (voxtype)" { spawn "voxtype" "record" "toggle"; }
     Mod+E { spawn "nautilus"; }
     Mod+B { spawn "firefox"; }
     Mod+Shift+B { spawn "firefox" "--private-window"; }
