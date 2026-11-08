@@ -1,0 +1,40 @@
+/* Page Content Context Menu */
+#context-bookmarklink,
+#context-inspect-a11y,
+#context-sendlinktodevice,
+#context-stripOnShareLink,
+#context-bookmarklink,
+#context-savelink,
+#context-selectall,
+#context-sendimage,
+#context-setDesktopBackground,
+#context-sep-sendlinktodevice,
+#context-stripOnShareLink,
+#context-savelink,
+#context-sep-setbackground,
+#context-print-selection,
+#context-setDesktopBackground,
+#context-sep-selectall
+{
+  display: none !important;
+}
+
+/* Tab Context Menu */
+#context_selectAllTabs,
+#context_closeTabOptions,
+#context_undoCloseTab,
+#context_closeDuplicateTabs,
+#tab-context-share-url
+{
+  display: none !important;
+}
+
+/* Force the "Search Google for..." item to the very top */
+#contentAreaContextMenu:has(#context-searchselect:not([hidden])):not(:has(#context-openlinkintab:not([hidden]))):not(:has(#context-copyimage:not([hidden]))):not(:has(#context-media-play:not([hidden]))) #context-searchselect {
+  order: -2 !important;
+}
+
+/* Move the separator line along with it so it stays clean */
+#contentAreaContextMenu:has(#context-searchselect:not([hidden])):not(:has(#context-openlinkintab:not([hidden]))):not(:has(#context-copyimage:not([hidden]))):not(:has(#context-media-play:not([hidden])))::before {
+  order: -1 !important;
+}
